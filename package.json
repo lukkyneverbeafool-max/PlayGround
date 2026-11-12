@@ -1,0 +1,5 @@
+{
+  "name": "gambit-chess",
+  "private": true,
+  "type": "module"
+}

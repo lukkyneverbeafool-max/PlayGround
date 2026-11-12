@@ -9,54 +9,236 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="style.css?v=20261112f" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
       <a class="brand" href="#" aria-label="Gambit home"><span class="brand-mark">♞</span><span>GAMBIT<span class="brand-dot">.</span></span></a>
-      <div class="top-caption"><span class="live-dot"></span> THE CLASSIC, REIMAGINED</div>
-      <button id="new-game" class="top-action"><span>＋</span> <span class="desktop-only">New game</span><span class="mobile-only">New</span></button>
+      <div class="top-caption"><span class="live-dot"></span> <span id="mode-caption">THE CLASSIC, REIMAGINED</span></div>
+      <div class="top-actions">
+        <button id="sound-button" class="top-icon" aria-label="Toggle sound" title="Sound on">♪</button>
+        <button id="new-game" class="top-action"><span>＋</span> <span class="desktop-only">New match</span><span class="mobile-only">New</span></button>
+      </div>
     </header>
 
     <main class="game-layout">
       <section class="stage-column" aria-label="Chess game board">
-        <div class="player-card opponent-card">
-          <div class="avatar dark-avatar">♚</div>
-          <div class="player-info"><div class="player-name">Black pieces <span class="you-tag">PLAYER 2</span></div><div class="player-sub" id="black-sub">Ready to play</div></div>
-          <div class="captured" id="black-captured" aria-label="Black captured pieces"></div>
+        <div class="player-card opponent-card" id="black-card">
+          <div class="avatar dark-avatar" id="black-avatar">♚</div>
+          <div class="player-info">
+            <div class="player-name"><span id="black-name">Black pieces</span> <span class="you-tag" id="black-tag">PLAYER 2</span></div>
+            <div class="player-sub"><span id="black-sub">Ready to play</span><span class="clock" id="black-clock"></span></div>
+          </div>
+          <div class="captured" id="black-captured" aria-label="Pieces captured by Black"></div>
           <div class="turn-marker" id="black-marker"></div>
         </div>
+
         <div id="board-frame" class="board-frame">
           <div id="loading" class="loading"><span class="loader"></span><span>Preparing the board</span></div>
           <canvas id="chess-canvas" aria-label="Interactive 3D chess board. Tap a piece, then a highlighted square." tabindex="0"></canvas>
           <div class="board-vignette"></div>
-          <div class="board-tip"><span class="tip-icon">↻</span> DRAG TO ROTATE</div>
+          <div class="board-tip"><span class="tip-icon">↻</span> DRAG TO ROTATE · TAP TO MOVE</div>
+          <div id="spectator-banner" class="board-banner" hidden>◎ SPECTATOR VIEW · INPUT PAUSED</div>
+          <div id="thinking-banner" class="board-banner thinking" hidden><span class="thinking-dots"><i></i><i></i><i></i></span> RIVAL IS THINKING</div>
         </div>
-        <div class="player-card current-card">
-          <div class="avatar light-avatar">♔</div>
-          <div class="player-info"><div class="player-name">White pieces <span class="you-tag">PLAYER 1</span></div><div class="player-sub" id="white-sub">Your move</div></div>
-          <div class="captured" id="white-captured" aria-label="White captured pieces"></div>
+
+        <div class="player-card current-card" id="white-card">
+          <div class="avatar light-avatar" id="white-avatar">♔</div>
+          <div class="player-info">
+            <div class="player-name"><span id="white-name">White pieces</span> <span class="you-tag" id="white-tag">PLAYER 1</span></div>
+            <div class="player-sub"><span id="white-sub">Your move</span><span class="clock" id="white-clock"></span></div>
+          </div>
+          <div class="captured" id="white-captured" aria-label="Pieces captured by White"></div>
           <div class="turn-marker" id="white-marker"></div>
         </div>
       </section>
 
       <aside class="side-panel">
-        <div class="panel-kicker">A TIMELESS BATTLE</div>
-        <h1>Make your<br><em>move.</em></h1>
-        <p class="panel-description">A little strategy. A little patience.<br class="wide-only"> A beautiful game of chess.</p>
-        <div class="turn-box" id="turn-box"><span class="turn-icon" id="turn-icon">♙</span><div><div class="turn-label">TO MOVE</div><div class="turn-value" id="turn-value">White</div></div><span class="turn-pulse"></span></div>
-        <div class="panel-actions">
-          <button id="undo-button" class="secondary-button" disabled><span class="undo-icon">↶</span> Undo move</button>
-          <button id="flip-button" class="icon-button" aria-label="Flip board" title="Flip board">⇅</button>
+        <div class="panel-kicker" id="panel-kicker">A TIMELESS BATTLE</div>
+        <h1 id="panel-title">Make your<br><em>move.</em></h1>
+        <p class="panel-description" id="panel-description">A little strategy. A little patience.<br class="wide-only"> A beautiful game of chess.</p>
+
+        <div class="turn-box" id="turn-box">
+          <span class="turn-icon" id="turn-icon">♙</span>
+          <div><div class="turn-label">TO MOVE</div><div class="turn-value" id="turn-value">White</div></div>
+          <span class="turn-pulse"></span>
         </div>
-        <div class="move-section"><div class="section-heading"><span>MOVE HISTORY</span><span id="move-count">0 MOVES</span></div><div class="move-list" id="move-list"><div class="empty-state"><span>♟</span><br>Your game begins with a single move.</div></div></div>
-        <div class="panel-footer"><span class="gold-star">✦</span> Play face-to-face on one device <span class="footer-dot">·</span> No timer, just tactics</div>
+
+        <div class="mode-strip">
+          <span class="mode-badge" id="mode-badge">VS COMPUTER</span>
+          <span class="mode-detail" id="mode-detail">Club · Balanced</span>
+        </div>
+
+        <div class="panel-actions">
+          <button id="undo-button" class="secondary-button" disabled><span class="undo-icon">↶</span> Undo</button>
+          <button id="hint-button" class="icon-button" aria-label="Show a hint" title="Hint (H)">✦</button>
+          <button id="flip-button" class="icon-button" aria-label="Flip board" title="Flip board (F)">⇅</button>
+          <button id="theme-button" class="icon-button" aria-label="Board and piece themes" title="Board &amp; pieces">▦</button>
+        </div>
+        <div class="panel-actions sub-actions">
+          <button id="spectate-button" class="secondary-button ghost" hidden>◎ Spectator</button>
+          <button id="analysis-button" class="secondary-button ghost" hidden>▤ Analyse game</button>
+        </div>
+
+        <div class="move-section">
+          <div class="section-heading"><span>MOVE HISTORY</span><span id="move-count">0 MOVES</span></div>
+          <div class="move-list" id="move-list"><div class="empty-state"><span>♟</span><br>Your game begins with a single move.</div></div>
+        </div>
+        <div class="panel-footer" id="panel-footer"><span class="gold-star">✦</span> Play face-to-face on one device <span class="footer-dot">·</span> No timer, just tactics</div>
       </aside>
     </main>
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div id="game-over" class="modal-backdrop" hidden><div class="game-modal"><div class="modal-emblem">♛</div><div class="panel-kicker">THE GAME IS DECIDED</div><h2 id="result-title">Checkmate</h2><p id="result-copy">White wins the game.</p><button id="play-again" class="top-action">Play again <span>→</span></button></div></div>
   </div>
-  <script type="module" src="game.js"></script>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <!-- Match setup -->
+  <div id="setup-modal" class="modal-backdrop setup-backdrop" hidden>
+    <div class="setup-modal" role="dialog" aria-modal="true" aria-labelledby="setup-title">
+      <button id="setup-close" class="modal-close" aria-label="Close setup">×</button>
+      <div class="setup-head">
+        <div class="panel-kicker">SET THE TABLE</div>
+        <h2 id="setup-title">Choose your match</h2>
+        <p>Face the rival, or share the board with a friend.</p>
+      </div>
+
+      <div class="mode-switch" role="tablist" aria-label="Game mode">
+        <button class="mode-tab active" data-mode="computer" role="tab" aria-selected="true">
+          <span class="mode-icon">♞</span><span class="mode-copy"><strong>Computer</strong><small>Train against the rival</small></span>
+        </button>
+        <button class="mode-tab" data-mode="local" role="tab" aria-selected="false">
+          <span class="mode-icon">♟</span><span class="mode-copy"><strong>1v1 Local</strong><small>Two players, one board</small></span>
+        </button>
+      </div>
+
+      <div id="computer-options" class="setup-section">
+        <div class="field">
+          <label>Difficulty</label>
+          <div class="segmented" id="difficulty-group">
+            <button data-value="casual">Casual</button>
+            <button data-value="club" class="active">Club</button>
+            <button data-value="master">Master</button>
+          </div>
+          <div class="field-hint" id="difficulty-hint">A steady club player. Punishes loose pieces.</div>
+        </div>
+        <div class="two-col">
+          <div class="field">
+            <label for="style-select">Rival style</label>
+            <select id="style-select">
+              <option value="balanced">Balanced</option>
+              <option value="aggressive">Aggressive</option>
+              <option value="defensive">Defensive</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="side-select">Play as</label>
+            <select id="side-select">
+              <option value="w">White</option>
+              <option value="b">Black</option>
+              <option value="random">Random</option>
+            </select>
+          </div>
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="adaptive-toggle" checked>
+          <span><strong>Adaptive rival</strong><small>Learns from your results and adjusts its form.</small></span>
+        </label>
+        <div class="form-readout" id="form-readout">Rival form · <b>reading your games</b></div>
+      </div>
+
+      <div id="local-options" class="setup-section" hidden>
+        <div class="field">
+          <label for="variant-select">Variant</label>
+          <select id="variant-select">
+            <option value="standard">Standard chess</option>
+            <option value="chess960">Chess960 — shuffled back rank</option>
+            <option value="koth">King of the Hill — reach the centre</option>
+          </select>
+          <div class="field-hint">Special conditions: timed matches and the centre-square victory.</div>
+        </div>
+        <label class="check-row">
+          <input type="checkbox" id="spectator-toggle">
+          <span><strong>Spectator mode</strong><small>Watch the board with move input paused.</small></span>
+        </label>
+      </div>
+
+      <div class="two-col setup-lower">
+        <div class="field">
+          <label for="time-select">Time control</label>
+          <select id="time-select">
+            <option value="unlimited">No clock — untimed</option>
+            <option value="blitz">Blitz · 3 + 2</option>
+            <option value="rapid">Rapid · 10 + 0</option>
+            <option value="classical">Classical · 30 + 0</option>
+          </select>
+        </div>
+        <div class="field">
+          <label>Appearance</label>
+          <button id="appearance-button" class="setup-link">Customize board &amp; pieces <span>→</span></button>
+        </div>
+      </div>
+
+      <div class="setup-foot">
+        <div class="setup-note" id="setup-note">You play White · untimed</div>
+        <button id="start-game" class="top-action">Start match <span>→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Appearance -->
+  <div id="appearance-modal" class="modal-backdrop" hidden>
+    <div class="appearance-modal" role="dialog" aria-modal="true" aria-labelledby="appearance-title">
+      <div class="setup-head compact">
+        <div class="panel-kicker">THE TABLE, YOUR WAY</div>
+        <h2 id="appearance-title">Board &amp; pieces</h2>
+      </div>
+      <div class="theme-block">
+        <div class="section-heading"><span>BOARD THEME</span></div>
+        <div class="theme-grid" id="board-theme-grid"></div>
+      </div>
+      <div class="theme-block">
+        <div class="section-heading"><span>PIECE SET</span></div>
+        <div class="theme-grid pieces" id="piece-theme-grid"></div>
+      </div>
+      <label class="check-row compact">
+        <input type="checkbox" id="sound-toggle" checked>
+        <span><strong>Sound effects</strong><small>Moves, captures and check.</small></span>
+      </label>
+      <div class="appearance-foot">
+        <button id="appearance-close" class="top-action">Done <span>→</span></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Result / report -->
+  <div id="game-over" class="modal-backdrop" hidden>
+    <div class="game-modal result-modal" role="dialog" aria-modal="true" aria-labelledby="result-title">
+      <div id="result-main">
+        <div class="modal-emblem" id="result-emblem">♛</div>
+        <div class="panel-kicker" id="result-kicker">THE GAME IS DECIDED</div>
+        <h2 id="result-title">Checkmate</h2>
+        <p id="result-copy">White wins the game.</p>
+        <div class="result-stats" id="result-stats"></div>
+        <div class="result-actions">
+          <button id="analyse-button" class="secondary-button">▤ Analyse game</button>
+          <button id="rematch-button" class="top-action">Rematch <span>→</span></button>
+          <button id="setup-button" class="text-button">Change setup</button>
+        </div>
+      </div>
+      <div id="analysis-panel" class="analysis-panel" hidden>
+        <div class="analysis-head">
+          <div><div class="panel-kicker">COACH'S REPORT</div><h2>Game analysis</h2></div>
+          <div class="analysis-score" id="analysis-score">—</div>
+        </div>
+        <div class="analysis-bar"><span id="analysis-progress-bar"></span></div>
+        <div class="analysis-status" id="analysis-progress">Reading the game…</div>
+        <div id="analysis-summary" class="analysis-summary"></div>
+        <div id="analysis-list" class="analysis-list"></div>
+        <button id="analysis-close" class="text-button">Back to result</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module" src="game.js?v=20261112g"></script>
 </body>
 </html>
