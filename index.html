@@ -2,60 +2,46 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1, user-scalable=no" />
-  <meta name="theme-color" content="#101a18" />
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%99%9E%3C/text%3E%3C/svg%3E" />
-  <title>Gambit — 3D Chess</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#0a1013" />
+  <title>Velocity Vortex — Ultimate Race Challenge</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800;900&family=DM+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
   <div class="app-shell">
     <header class="topbar">
-      <a class="brand" href="#" aria-label="Gambit home"><span class="brand-mark">♞</span><span>GAMBIT<span class="brand-dot">.</span></span></a>
-      <div class="top-caption"><span class="live-dot"></span> THE CLASSIC, REIMAGINED</div>
-      <button id="new-game" class="top-action"><span>＋</span> <span class="desktop-only">New game</span><span class="mobile-only">New</span></button>
+      <a class="brand" href="#" aria-label="Velocity Vortex home"><span class="brand-mark">V<span>V</span></span><span class="brand-name">VELOCITY<span class="brand-light">VORTEX</span></span></a>
+      <div class="season"><span class="live-dot"></span> SEASON 04 <i>·</i> NEON FRONTIER</div>
+      <div class="profile"><span class="profile-level">LVL <b id="level">01</b></span><span class="profile-avatar">R</span><span class="profile-name">RACER</span><span class="credits">◈ <b id="credits">1,250</b></span></div>
     </header>
-
     <main class="game-layout">
-      <section class="stage-column" aria-label="Chess game board">
-        <div class="player-card opponent-card">
-          <div class="avatar dark-avatar">♚</div>
-          <div class="player-info"><div class="player-name">Black pieces <span class="you-tag">PLAYER 2</span></div><div class="player-sub" id="black-sub">Ready to play</div></div>
-          <div class="captured" id="black-captured" aria-label="Black captured pieces"></div>
-          <div class="turn-marker" id="black-marker"></div>
+      <section class="race-column">
+        <div class="race-topline"><div><div class="eyebrow"><span class="eyebrow-line"></span> WORLD TOUR <span id="event-index">01 / 04</span></div><h1 id="track-title">MIDNIGHT <em>RUN</em></h1></div><div class="race-meta"><span class="weather-icon" id="weather-icon">☀</span><div><b id="weather-name">CLEAR SKIES</b><small id="time-name">GOLDEN HOUR</small></div><span class="meta-divider"></span><div class="mode-tag" id="mode-tag">CIRCUIT · 3 LAPS</div></div></div>
+        <div class="viewport" id="viewport">
+          <canvas id="race-canvas" aria-label="Racing game. Use arrow keys or WASD to steer and accelerate."></canvas>
+          <div class="screen-vignette"></div><div class="hud-top"><div class="position-badge"><b id="position">1</b><span> / 4</span><small>POSITION</small></div><div class="lap-badge"><span>LAP</span><b id="lap">1<span> / 3</span></b></div><div class="race-timer"><small>RACE TIME</small><b id="timer">00:00.00</b></div></div>
+          <div class="hud-bottom"><div class="speed-block"><b id="speed">000</b><span>KM/H</span></div><div class="speedometer"><div class="speed-track"><i id="speed-fill"></i></div><div class="speed-labels"><span>0</span><span>100</span><span>200</span><span>300</span></div></div><div class="boost-hud"><div class="boost-label"><span>BOOST</span><b id="boost-value">100%</b></div><div class="boost-track"><i id="boost-fill"></i></div></div></div>
+          <div class="countdown" id="countdown" hidden>3</div>
+          <div class="race-banner" id="race-banner" hidden><span>CHECKPOINT</span><b>+ 250 M</b></div>
+          <div class="center-message" id="center-message" hidden></div>
+          <div class="sound-indicator">◖ <span>ENGINE LIVE</span></div>
         </div>
-        <div id="board-frame" class="board-frame">
-          <div id="loading" class="loading"><span class="loader"></span><span>Preparing the board</span></div>
-          <canvas id="chess-canvas" aria-label="Interactive 3D chess board. Tap a piece, then a highlighted square." tabindex="0"></canvas>
-          <div class="board-vignette"></div>
-          <div class="board-tip"><span class="tip-icon">↻</span> DRAG TO ROTATE</div>
-        </div>
-        <div class="player-card current-card">
-          <div class="avatar light-avatar">♔</div>
-          <div class="player-info"><div class="player-name">White pieces <span class="you-tag">PLAYER 1</span></div><div class="player-sub" id="white-sub">Your move</div></div>
-          <div class="captured" id="white-captured" aria-label="White captured pieces"></div>
-          <div class="turn-marker" id="white-marker"></div>
-        </div>
+        <div class="race-footer"><div class="track-progress"><div class="progress-copy"><span>RACE PROGRESS</span><b id="progress-copy">0%</b></div><div class="progress-track"><i id="progress-fill"></i><span class="progress-marker"></span></div><div class="progress-labels"><span>START</span><span id="finish-label">FINISH · 3 LAPS</span></div></div><div class="controls-hint"><span class="keycap">W</span><span class="keycap">A</span><span class="keycap">S</span><span class="keycap">D</span><small>DRIVE</small><span class="keycap boost-key">SHIFT</span><small>BOOST</small></div></div>
       </section>
-
       <aside class="side-panel">
-        <div class="panel-kicker">A TIMELESS BATTLE</div>
-        <h1>Make your<br><em>move.</em></h1>
-        <p class="panel-description">A little strategy. A little patience.<br class="wide-only"> A beautiful game of chess.</p>
-        <div class="turn-box" id="turn-box"><span class="turn-icon" id="turn-icon">♙</span><div><div class="turn-label">TO MOVE</div><div class="turn-value" id="turn-value">White</div></div><span class="turn-pulse"></span></div>
-        <div class="panel-actions">
-          <button id="undo-button" class="secondary-button" disabled><span class="undo-icon">↶</span> Undo move</button>
-          <button id="flip-button" class="icon-button" aria-label="Flip board" title="Flip board">⇅</button>
-        </div>
-        <div class="move-section"><div class="section-heading"><span>MOVE HISTORY</span><span id="move-count">0 MOVES</span></div><div class="move-list" id="move-list"><div class="empty-state"><span>♟</span><br>Your game begins with a single move.</div></div></div>
-        <div class="panel-footer"><span class="gold-star">✦</span> Play face-to-face on one device <span class="footer-dot">·</span> No timer, just tactics</div>
+        <div class="panel-head"><div><div class="eyebrow">YOUR NEXT CHALLENGE</div><h2>THE <em>GRID</em></h2></div><button class="icon-button" id="next-track" aria-label="Next track">↗</button></div>
+        <div class="track-card" id="track-card"><div class="track-art" id="track-art"><div class="art-sun"></div><div class="art-horizon"></div><div class="art-road"></div><div class="art-label" id="art-label">01 / CITY STREETS</div></div><div class="track-card-copy"><div class="track-card-title"><div><span class="track-category" id="track-category">CITY CIRCUIT</span><h3 id="card-title">MIDNIGHT RUN</h3></div><span class="difficulty" id="difficulty"><i>◆◆◇</i><small>MEDIUM</small></span></div><p id="track-description">Thread the neon-lit downtown grid. Watch for traffic through the underpass.</p><div class="track-stats"><div><small>DISTANCE</small><b id="distance-stat">3.2 <i>KM</i></b></div><div><small>BEST TIME</small><b id="best-time">—:—</b></div><div><small>REWARD</small><b class="reward">◈ 350</b></div></div></div></div>
+        <div class="track-picker" id="track-picker" aria-label="Choose a race track"></div>
+        <div class="garage-preview"><div class="garage-title"><div><div class="eyebrow">YOUR GARAGE</div><h3>APEX <span>GT-R</span></h3></div><span class="car-count">01 <i>/ 04</i></span></div><div class="car-preview"><div class="car-silhouette">▰</div><div class="car-nameplate"><b id="car-name">APEX GT-R</b><span id="car-class">SPORT · CLASS A</span></div><button class="customize-button" id="customize-button">TUNE <span>↗</span></button></div><div class="stats-list"><div><span>TOP SPEED</span><div class="stat-bar"><i style="width:78%"></i></div><b id="stat-speed">78</b></div><div><span>HANDLING</span><div class="stat-bar"><i style="width:72%"></i></div><b id="stat-handling">72</b></div><div><span>BOOST</span><div class="stat-bar"><i style="width:65%"></i></div><b id="stat-boost">65</b></div></div><button class="start-button" id="start-race"><span class="start-icon">▶</span><span><b>START RACE</b><small>ENTER THE GRID</small></span><span class="button-arrow">→</span></button></div>
       </aside>
     </main>
-    <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div id="game-over" class="modal-backdrop" hidden><div class="game-modal"><div class="modal-emblem">♛</div><div class="panel-kicker">THE GAME IS DECIDED</div><h2 id="result-title">Checkmate</h2><p id="result-copy">White wins the game.</p><button id="play-again" class="top-action">Play again <span>→</span></button></div></div>
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+    <div class="modal-backdrop" id="result-modal" hidden><div class="result-modal"><div class="modal-kicker">RACE COMPLETE</div><div class="result-medal">✦</div><h2 id="result-title">PODIUM FINISH</h2><p id="result-copy">You conquered Midnight Run.</p><div class="result-stats"><div><small>FINISH TIME</small><b id="result-time">00:00.00</b></div><div><small>REWARD EARNED</small><b id="result-reward">◈ 350</b></div></div><button class="start-button" id="continue-button"><span class="start-icon">↻</span><span><b>RACE AGAIN</b><small>THE GRID IS WAITING</small></span><span class="button-arrow">→</span></button></div></div>
+    <div class="garage-modal" id="garage-modal" hidden><div class="garage-dialog"><button class="close-modal" id="close-garage">×</button><div class="eyebrow">APEX PERFORMANCE LAB</div><h2>BUILD YOUR <em>EDGE</em></h2><p>Fine-tune your ride for the road ahead.</p><div class="tune-option"><div><b>POWER UNIT</b><small>More top speed · 450 ◈</small></div><button data-upgrade="speed">UPGRADE <span>↗</span></button></div><div class="tune-option"><div><b>RACE SUSPENSION</b><small>Sharper handling · 350 ◈</small></div><button data-upgrade="handling">UPGRADE <span>↗</span></button></div><div class="tune-option"><div><b>NITRO SYSTEM</b><small>Longer boost · 300 ◈</small></div><button data-upgrade="boost">UPGRADE <span>↗</span></button></div><div class="paint-row"><span>BODY FINISH</span><div class="paint-swatches"><button class="swatch active" data-paint="#e6aa43" style="--paint:#e6aa43" aria-label="Amber paint"></button><button class="swatch" data-paint="#50d5c2" style="--paint:#50d5c2" aria-label="Mint paint"></button><button class="swatch" data-paint="#e95c6b" style="--paint:#e95c6b" aria-label="Coral paint"></button><button class="swatch" data-paint="#a58bff" style="--paint:#a58bff" aria-label="Violet paint"></button></div></div></div></div>
+    <div class="touch-controls" aria-label="Touch driving controls"><button data-control="left">◀</button><button data-control="brake">▼</button><button data-control="right">▶</button><button data-control="boost">⚡</button><button data-control="gas">▲</button></div>
   </div>
   <script type="module" src="game.js"></script>
 </body>
